@@ -21,6 +21,7 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete = models.CASCADE)
     
     
+    
     def product_url(self):
         return reverse('product-detail', args =[self.category.category_slug, self.product_slug])
     

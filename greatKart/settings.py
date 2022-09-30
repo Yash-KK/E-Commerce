@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     
     'acc',
     'Category',
-    'Store'
+    'Store',
+    'Cart'
 ]
 AUTH_USER_MODEL = 'acc.Account'
 MIDDLEWARE = [
@@ -67,7 +68,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 
-                'Category.cp1.category_renderer'
+                'Category.cp1.category_renderer',
+                'Cart.cp2.cart_count'
             ],
         },
     },

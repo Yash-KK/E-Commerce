@@ -80,7 +80,7 @@
         {% if pd.stock == 0 %}
             <h5 style='color:red;'>Out of Stock</h5>
         {% else %}
-            <a href="./product-detail.html" class="btn  btn-primary"> <span class="text">Add to cart</span> <i class="fas fa-shopping-cart"></i>  </a>
+            <a href="{% url 'add-to-cart' pd.id %}" class="btn  btn-primary"> <span class="text">Add to cart</span> <i class="fas fa-shopping-cart"></i>  </a>
         {% endif %}
     <a class='btn btn-primary' href="{% url 'store-page' %}">StorePage  <i class="fas fa-eye"></i></a>        
     </article> <!-- product-info-aside .// -->
