@@ -5,7 +5,8 @@ from Category.models import (
     Category
 )
 from Store.models import (
-    Product
+    Product,
+    Variation
 )
 # Create your models here.
 
@@ -18,6 +19,7 @@ class Cart(models.Model):
     
 class CartItems(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    variations = models.ManyToManyField(Variation,blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     is_active = models.BooleanField(default=True)

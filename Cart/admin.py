@@ -4,5 +4,11 @@ from .models import (
     CartItems
 )
 # Register your models here.
-admin.site.register(Cart)
-admin.site.register(CartItems)
+
+class CartAdmin(admin.ModelAdmin):
+    list_display = ['cart_id']
+    
+class CartItemAdmin(admin.ModelAdmin):
+    list_display = ['cart', 'product','quantity']    
+admin.site.register(Cart,CartAdmin)
+admin.site.register(CartItems, CartItemAdmin)
