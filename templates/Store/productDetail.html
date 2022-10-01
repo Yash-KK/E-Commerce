@@ -23,72 +23,95 @@
     </article> <!-- gallery-wrap .end// -->
             </aside>
             <main class="col-md-6 border-left">
-    <article class="content-body">
-    
-    <h2 class="title">{{ pd.product_name }}</h2>
-    
-    <div class="mb-3"> 
-        <var class="price h4">${{ pd.product_price }}</var> 
-    </div> 
-    
-    <p>
-        {{ pd.description }}
-    </p>
-    
-    
-    <hr>
-        <div class="row">
-            <div class="item-option-select">
-                <h6>Choose Color</h6>
-                <div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
-                  <label class="btn btn-light">
-                    <input type="radio" name="radio_color"> Silver
-                  </label>
-                  <label class="btn btn-light">
-                    <input type="radio" name="radio_color" > Gray
-                  </label>
-                  <label class="btn btn-light active">
-                    <input type="radio" name="radio_color checked"> Gold
-                  </label>
-                  <label class="btn btn-light">
-                    <input type="radio" name="radio_color"> Black
-                  </label>
-                </div> 
-            </div>
-        </div> <!-- row.// -->
-        <div class="row">
-            <div class="item-option-select">
-                <h6>Select Size</h6>
-                <div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
-                  <label class="btn btn-light">
-                    <input type="radio" name="radio_color"> S
-                  </label>
-                  <label class="btn btn-light active">
-                    <input type="radio" name="radio_color" checked> M
-                  </label>
-                  <label class="btn btn-light">
-                    <input type="radio" name="radio_color"> L
-                  </label>
-                  <label class="btn btn-light">
-                    <input type="radio" name="radio_color"> XL
-                  </label>
-                </div> 
-            </div>
-        </div> <!-- row.// -->
-        <hr>
-        
-        {% if pd.stock == 0 %}
-            <h5 style='color:red;'>Out of Stock</h5>
-        {% else %}
-            <a href="{% url 'add-to-cart' pd.id %}" class="btn  btn-primary"> <span class="text">Add to cart</span> <i class="fas fa-shopping-cart"></i>  </a>
-        {% endif %}
-    <a class='btn btn-primary' href="{% url 'store-page' %}">StorePage  <i class="fas fa-eye"></i></a>        
-    </article> <!-- product-info-aside .// -->
+                
+                    {% comment %} {% csrf_token %} {% endcomment %}
+                    <article class="content-body">
+                        <form action="{% url 'add-to-cart' pd.id %}" method="POST">
+                            {% csrf_token %}
+                        <h2 class="title">{{ pd.product_name }}</h2>
+                        
+                        <div class="mb-3"> 
+                            <var class="price h4">${{ pd.product_price }}</var> 
+                        </div> 
+                        
+                        <p>
+                            {{ pd.description }}
+                        </p>
+                        
+                        
+                        <hr>
+                            <div class="row">
+                                <div class="item-option-select">
+                                    <h6>Choose Color</h6>
+                                    {% comment %} <div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
+                                      <label class="btn btn-light">
+                                        <input type="radio" name="radio_color"> Silver
+                                      </label>
+                                      <label class="btn btn-light">
+                                        <input type="radio" name="radio_color" > Gray
+                                      </label>
+                                      <label class="btn btn-light active">
+                                        <input type="radio" name="radio_color checked"> Gold
+                                      </label>
+                                      <label class="btn btn-light">
+                                        <input type="radio" name="radio_color"> Black
+                                      </label>
+                                    </div>  {% endcomment %}
+                                    <select name="color" id="" class="form-control" required>
+                                        <option disabled selected value="">Select</option>                                        
+                                        {% for i in pd.variation_set.colors %}
+                                        <option value="{{ i.variation_value }}">{{ i.variation_value }}</option>
+                                        {% endfor %}                                       
+                                    </select>
+                                </div>
+                            </div> <!-- row.// -->
+                            <div class="row">
+                                <div class="item-option-select">
+                                    <h6>Select Size</h6>
+                                    {% comment %} <div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
+                                      <label class="btn btn-light">
+                                        <input type="radio" name="radio_color"> S
+                                      </label>
+                                      <label class="btn btn-light active">
+                                        <input type="radio" name="radio_color" checked> M
+                                      </label>
+                                      <label class="btn btn-light">
+                                        <input type="radio" name="radio_color"> L
+                                      </label>
+                                      <label class="btn btn-light">
+                                        <input type="radio" name="radio_color"> XL
+                                      </label>
+                                    </div>  {% endcomment %}
+                                    <select name="size" id="" class='form-control' required>
+                                        <option disabled selected value="">Select</option>
+                                        
+                                        {% for i in pd.variation_set.sizes %}
+                                            <option value="{{ i.variation_value }}">{{ i.variation_value }}</option>
+                                        {% endfor %}                                        
+                    
+                                    </select>
+                                </div>
+                            </div> <!-- row.// -->
+                            <hr>
+                            
+                            {% if pd.stock == 0 %}
+                                <h5 style='color:red;'>Out of Stock</h5>
+                            {% else %}
+                                {% comment %} <a href="{% url 'add-to-cart' pd.id %}" class="btn  btn-primary"> <span class="text">Add to cart</span> <i class="fas fa-shopping-cart"></i>  </a> {% endcomment %}
+                                <button type="submit" class="btn  btn-primary"> <span class="text">Add to cart</span> <i class="fas fa-shopping-cart"></i>  </button>
+
+                            {% endif %}
+                        <a class='btn btn-primary' href="{% url 'store-page' %}">StorePage  <i class="fas fa-eye"></i></a>        
+                        {% comment %} <button type="submit" class='btn btn-primary' >StorePage  <i class="fas fa-eye"></i></button>         {% endcomment %}
+                    </form>
+                    </article> <!-- product-info-aside .// -->
+                
+               
             </main> <!-- col.// -->
         </div> <!-- row.// -->
     </div> <!-- card.// -->
     <!-- ============================ COMPONENT 1 END .// ================================= -->
-    
+     
     <br>
     
     <div class="row">
