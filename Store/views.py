@@ -15,6 +15,8 @@ from Category.models import (
 # Create your views here.
 
 def search_functionality(request):
+    all_products = None
+    product_count = 0
     if request.method == 'GET':
         key = request.GET['keyword']
         if key:
@@ -31,7 +33,7 @@ def search_functionality(request):
     return render(request, 'Store/store.html', context)
    
 
-def store_page(request, c_slug=None):
+def store_page(request, c_slug=None):   
     if c_slug:
         all_products = Product.objects.filter(category__category_slug=c_slug)
         product_count = all_products.count()
@@ -58,8 +60,7 @@ def store_page(request, c_slug=None):
         except EmptyPage:
             pp = paginator.page(paginator.num_pages)   
             
-    context = {
-        # 'all_products': all_products,
+    context = {       
         'all_products':pp,
         'product_count':product_count
     }
