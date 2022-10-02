@@ -56,7 +56,7 @@
         <div class="col-lg  col-md-6 col-sm-12 col">
             <form action="{% url 'search' %}" method="GET" class="search"> 
                 <div class="input-group w-100">
-                    <input type="text" name="keyword" class="form-control" style="width:60%;" placeholder="Search">
+                    <input type="text" name="keyword" class="form-control" style="width:60%;" placeholder="Search" required>
                     
                     <div class="input-group-append">
                       <button class="btn btn-primary" type="submit">
@@ -79,7 +79,7 @@
                                 <small class="title text-muted">Welcome {{ user.first_name }}!</small>
                                 <div> 
                                     <a href="{% url 'logout-page' %}">Logout</a> <span class="dark-transp"> | </span>
-                                    <a href="#"> Dashboard</a>
+                                    <a href="{% url 'dashboard' %}"> Dashboard</a>
                                 </div>
                             {% endif %}
                         </div>
