@@ -76,7 +76,17 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'greatKart.wsgi.application'
-
+try:
+    from django.contrib.messages import constants as messages
+    MESSAGE_TAGS = {
+        messages.DEBUG: 'alert-info',
+        messages.INFO: 'alert-info',
+        messages.SUCCESS: 'alert-success',
+        messages.WARNING: 'alert-warning',
+        messages.ERROR: 'alert-danger',
+    }
+except Exception as e:
+    pass
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
