@@ -72,6 +72,7 @@ def product_detail(request,c_slug=None, p_slug=None):
     
     context = {
         'pd':product_detail
-    }
-        
+    }        
     return render(request ,'Store/productDetail.html',context)
+
+
