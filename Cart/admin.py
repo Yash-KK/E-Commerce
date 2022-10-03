@@ -9,6 +9,7 @@ class CartAdmin(admin.ModelAdmin):
     list_display = ['cart_id']
     
 class CartItemAdmin(admin.ModelAdmin):
-    list_display = ['cart', 'product','quantity']    
+    list_display = ['product','quantity']    
+    
 admin.site.register(Cart,CartAdmin)
 admin.site.register(CartItems, CartItemAdmin)

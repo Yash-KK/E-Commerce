@@ -1,8 +1,12 @@
-from typing import Type
+#DJANGO
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
+
+#PYTHON
+from urllib import parse
 
 # VERIFICATION
 from django.contrib.sites.shortcuts import get_current_site
@@ -12,9 +16,16 @@ from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
 
-# Models
+#VIEWS
+from Cart.views import _cart_id
+
+# MODELS
 from .models import (
     Account
+)
+from Cart.models import (
+    Cart,
+    CartItems
 )
 # Forms
 from .forms import (
@@ -67,10 +78,59 @@ def login_page(request):
         
         user = authenticate(email=email, password=password)
         if user is not None:
+           
+            
+            try:
+                cart = Cart.objects.get(cart_id=_cart_id(request))
+                cart_items_exist = CartItems.objects.filter(cart=cart).exists()
+                if cart_items_exist:
+                    
+                    # Fetching the product variations
+                    product_ke_var = []
+                    cart_items = CartItems.objects.filter(cart=cart)
+                    for item in cart_items:
+                        var = item.variations.all()
+                        product_ke_var.append(list(var))
+                    
+                    
+                    # User Cart
+                    user_cart = CartItems.objects.filter(user=user)
+                    existing_var = []
+                    item_id = []
+                    for item in user_cart:
+                        var = item.variations.all()
+                        existing_var.append(list(var))
+                        item_id.append(item.id)
+                    
+                    for pr in product_ke_var:
+                        if pr in existing_var:   
+                            index = existing_var.index(pr)
+                            id = item_id[index]
+                            item = CartItems.objects.get(id=id)
+                            item.quantity +=1
+                            item.user = user
+                            item.save()
+                        else:
+                            cart_items = CartItems.objects.filter(cart=cart)
+                            for item in cart_items:
+                                item.user = user
+                                item.save()         
+                # for item in cart_items:
+                #     item.user = user
+                #     item.save()
+            except:
+                pass 
             login(request, user)
+            url = request.META.get('HTTP_REFERER')
+            try:
+                x = dict(parse.parse_qs(parse.urlsplit(url).query))
+                if 'next' in x:
+                    next_page = x['next'][0]
+                    return redirect(next_page)
+            except:
             # messages.info(request, f"You are now logged in!")
-            return redirect('dashboard')
-        else:
+                return redirect('dashboard')
+        else: 
             messages.error(request,"Invalid username or password.")
             return redirect('login-page')
         
@@ -96,8 +156,8 @@ def activate(request, uidb64, token):
     else:
         return messages.error(request, 'Invalid activation link')
         return redirect('register')    
-    # return HttpResponse("ok")
+   
 
-
+@login_required(login_url='login-page')
 def dashboard(request):
     return render(request, 'acc/dashboard.html')
