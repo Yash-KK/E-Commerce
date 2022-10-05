@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'acc',
     'Category',
     'Store',
-    'Cart'
+    'Cart',
+    'Orders'
 ]
 AUTH_USER_MODEL = 'acc.Account'
 MIDDLEWARE = [
