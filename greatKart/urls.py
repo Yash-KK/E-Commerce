@@ -27,7 +27,8 @@ urlpatterns = [
     
     path("store/", include("Store.urls")),
     path("cart/", include("Cart.urls")),
-    path("account/", include("acc.urls"))
+    path("account/", include("acc.urls")),
+    path("order/", include("Orders.urls"))
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
