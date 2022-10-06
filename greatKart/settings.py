@@ -150,3 +150,8 @@ STATIC_ROOT = (os.path.join(BASE_DIR, 'static'))
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# razorpay
+RAZORPAY_API_KEY_ID = "rzp_test_Tu1pT2oZQ4WOB2"
+RAZORPAY_API_KEY_SECRET = "aSzPQrCSWDivNX7jGWplVGkF"
