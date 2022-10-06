@@ -1,18 +1,30 @@
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 
+import json
+import razorpay
+from greatKart.settings import (
+    RAZORPAY_API_KEY_ID,
+    RAZORPAY_API_KEY_SECRET
+)
+
 #PYTHON
 import datetime
+
 #MODELS
 from Cart.models import (
     Cart,
     CartItems
 )
 from .models import (
-    Order
+    Order,
+    Payment 
 )
 #FORMS
 from .forms import OrderForm
+
+
+client = razorpay.Client(auth=(RAZORPAY_API_KEY_ID, RAZORPAY_API_KEY_SECRET))
 # Create your views here.
 def place_order(request):
     current_user = request.user
@@ -54,16 +66,28 @@ def place_order(request):
             data.order_number = str(data.id) + current_date
             print(data.order_number)
             data.save()
-            
+             
             order = Order.objects.get(user=current_user, order_number = data.order_number, is_ordered=False)
             
+            # order creatiion of razorpay
+            DATA = {
+                "amount": grand_total*100,
+                "currency": "INR",
+                "payment_capture": 1,
+            }
+            payment_order = client.order.create(data=DATA)
+            print(f"Payment Order: {payment_order}")
+            
+            payment_order_id = payment_order['id']
             context = {
                 'order':order,
                 'total':total,
                 'tax': tax,
-                'grand_total':grand_total,
+                'grand_total':grand_total,                
+                'cart_items':cart_items,     
                 
-                'cart_items':cart_items
+                'api_key_id': RAZORPAY_API_KEY_ID,
+                'order_id': payment_order_id,          
             }
             return render(request, 'Orders/make_payment.html', context)
         else:
@@ -74,5 +98,27 @@ def place_order(request):
     
     
 def make_payment(request):
+    print("did it enter this function?")
+    body = json.loads(request.body)
+    print(body)
+    
+    order_num = body['orderID']
+    # Fetching the Order instance because we need order_total
+    order = Order.objects.get(user=request.user, order_number=order_num)
+    total_amount = order.order_total
+    
+    payment = Payment.objects.create(
+        user = request.user,
+        payment_id = body['transID'],
+        payment_method = body['payment_method'],
+        status = body['status'],
+        amount_paid = total_amount
+    )
+    
+    order.payment = payment
+    order.is_ordered = True
+    
+    order.save()
+    payment.save()
     return render(request, 'Orders/make_payment.html')
     

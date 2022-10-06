@@ -123,13 +123,17 @@ def login_page(request):
             login(request, user)
             url = request.META.get('HTTP_REFERER')
             try:
+                print("Try wala")
                 x = dict(parse.parse_qs(parse.urlsplit(url).query))
                 if 'next' in x:
                     next_page = x['next'][0]
                     return redirect(next_page)
             except:
+                print("Except wala")
+                pass
             # messages.info(request, f"You are now logged in!")
-                return redirect('dashboard')
+            print("here")
+            return redirect('dashboard')
         else: 
             messages.error(request,"Invalid username or password.")
             return redirect('login-page')
