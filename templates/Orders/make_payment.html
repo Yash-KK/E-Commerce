@@ -38,7 +38,7 @@
 			<h5 class="card-header">Payment Method</h5>
 			<div class="card-body">
 			
-			  <p class="card-text">PAYPAL</p>
+			  <p class="card-text">Razorpay</p>
 			  
 			</div>
 		</div>
@@ -173,7 +173,7 @@
 	  var url = "{% url 'payments' %}"
 	  var csrftoken = getCookie('csrftoken');
 	  var orderID = "{{order.order_number}}"
-	 
+	  var redirect_url = "{% url 'order_complete' %}"
   
    // ....4.razorpay integration for razorpay popup
 	var options = {
@@ -232,6 +232,10 @@
 				  status: status,
 			  }),
 		  })
+		  .then((response) => response.json())
+		.then((data) => {
+				window.location.href = redirect_url + '?order_number='+data.order_number+'&payment_id='+data.transID;
+			});
 	
 	
 	  

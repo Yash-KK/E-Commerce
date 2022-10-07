@@ -10,6 +10,7 @@ class Payment(models.Model):
     payment_method = models.CharField(max_length=100)
     amount_paid = models.CharField(max_length=100)
     status = models.CharField(max_length=100) 
+    
     created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
@@ -17,7 +18,7 @@ class Payment(models.Model):
  
 class Order(models.Model):
     STATUS = (
-        ('New', "New"),
+        ('New', "New"), 
         ("Accepted", "Accepted"),
         ("Completed", "Completed"),
         ("Cancelled", "Cancelled"),
@@ -51,7 +52,7 @@ class Order(models.Model):
     
     
     def __str__(self):
-        return f"{self.first_name}"
+        return f"{self.order_number}"
 
 class OrderProduct(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
@@ -59,8 +60,7 @@ class OrderProduct(models.Model):
     user = models.ForeignKey(Account, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     variations = models.ManyToManyField(Variation, blank=True)
-    color = models.CharField(max_length=50)
-    size = models.CharField(max_length=50)
+    
     quantity = models.IntegerField()
     product_price = models.FloatField()
     ordered = models.BooleanField(default=False)
@@ -68,3 +68,6 @@ class OrderProduct(models.Model):
     updated_at = models.DateTimeField(auto_now=True)    
     
    
+    
+    def __str__(self):
+        return f"Order({self.order}) of {self.user.first_name}"
