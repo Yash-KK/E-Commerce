@@ -1,17 +1,29 @@
-from django.shortcuts import render
+#DJANGO
+from django.http import HttpResponse
+from django.shortcuts import redirect, render
 from django.db.models import Q
 from django.core.paginator import (
     Paginator,
     EmptyPage,
     PageNotAnInteger
 )
-# Models
+
+#MODELS
 from .models import (
-    Product
+    Product,
+    ReviewRating
 )
+from acc.models import Account
 from Category.models import (
     Category 
 )
+from Orders.models import (
+    OrderProduct
+)
+
+#FORMS
+from .forms import RatingForm
+
 # Create your views here.
 
 def search_functionality(request):
@@ -67,12 +79,56 @@ def store_page(request, c_slug=None):
     return render(request, 'Store/store.html',context)
 
 def product_detail(request,c_slug=None, p_slug=None):
+    
     if c_slug and p_slug:
         product_detail = Product.objects.get(category__category_slug = c_slug, product_slug=p_slug)
     
+    if request.user.is_authenticated:    
+        order_product = OrderProduct.objects.filter(user=request.user, product=product_detail.id).exists()
+    else:
+        order_product = None    
+    
+    reviews = ReviewRating.objects.filter(product=product_detail.id)
     context = {
-        'pd':product_detail
+        'pd':product_detail,
+        'op': order_product,
+        
+        'reviews':reviews
     }        
     return render(request ,'Store/productDetail.html',context)
 
 
+def submit_review(request,product_id):
+    product = Product.objects.get(id=product_id)
+    current_user = request.user
+    ip = request.META.get("REMOTE_ADDR")
+    previous_url = request.META.get("HTTP_REFERER")
+    obj = ReviewRating()
+    
+    try:
+        # update the review
+        if request.method == 'POST':
+            previous_rating = ReviewRating.objects.get(user=current_user, product=product)
+            form = RatingForm(request.POST,instance=previous_rating)
+            if form.is_valid():
+                form.save()
+                return redirect(previous_url)  
+    except:        
+        print("Except wala")
+        # create a review       
+        if request.method == 'POST':
+           if request.method == 'POST':
+            form = RatingForm(request.POST)
+        
+            if form.is_valid():
+                obj.rating = request.POST['rating']
+                obj.review = request.POST['review']
+                obj.subject = request.POST['subject']
+                
+                obj.ip = ip
+                obj.user = current_user
+                obj.product = product
+                obj.save()  
+                return redirect(previous_url)
+
+    return HttpResponse("Reviewed")

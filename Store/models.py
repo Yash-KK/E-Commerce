@@ -6,6 +6,9 @@ from django.urls import reverse
 from Category.models import (
     Category 
 )
+from acc.models import (
+    Account
+)
 # Create your models here.
 class Product(models.Model):
     product_name = models.CharField(max_length=150)
@@ -20,6 +23,27 @@ class Product(models.Model):
     modified_date = models.DateTimeField(auto_now=True)
     category = models.ForeignKey(Category, on_delete = models.CASCADE)
     
+    def avg_review(self):
+        avg = 0
+        count = 0
+        review_ratings = ReviewRating.objects.filter(product=self)
+        for rev in review_ratings:
+            avg += rev.rating
+            count +=1
+        try:    
+            avg = avg/count   
+        except ZeroDivisionError:
+            avg = 0
+                 
+        if review_ratings != 0.0:            
+            return round(float(avg),2)
+        
+        
+        return float(avg)
+    
+    def total_reviews(self):       
+        reviews = ReviewRating.objects.filter(product=self).count()
+        return reviews
     
     
     def product_url(self):
@@ -56,4 +80,24 @@ class Variation(models.Model):
     objects = VariationManager()
     def __str__(self):
         return f"{self.product}: Variation({self.variation_value})" 
+
+class ReviewRating(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    
+    subject = models.CharField(max_length=50,blank=True)
+    review = models.TextField(max_length=250,blank=True)    
+    rating = models.FloatField()
+    
+    ip = models.CharField(max_length=250)
+    status = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def full_name(self):
+        return f"{self.user.first_name} {self.user.last_name}"
+    
+    def __str__(self):
+        return f"{self.user.first_name}: {self.rating}"
+    
          
