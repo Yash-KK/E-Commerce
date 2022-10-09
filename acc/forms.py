@@ -1,9 +1,9 @@
 from django import forms
-from django import forms
 
 # Model
 from .models import (
-    Account
+    Account,
+    UserProfile
 )
 
 
@@ -39,3 +39,32 @@ class RegisterationForm(forms.ModelForm):
             self.fields[field].widget.attrs.update({
                 'class':'form-control'
             })    
+
+class AccountForm(forms.ModelForm):
+    class Meta:
+        model = Account
+        fields = ['first_name', 'last_name', 'phone_number']
+        
+    def __init__(self,*args, **kwargs):
+        super(AccountForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update(
+                {
+                    'class': 'form-control'
+                }
+            )
+        
+class ProfileForm(forms.ModelForm):
+    profile_pic = forms.ImageField(label=('Company Logo'),required=False, error_messages = {'invalid':("Image files only")}, widget=forms.FileInput)
+    class Meta:
+        model = UserProfile
+        fields = ['profile_pic', 'address_line_1', 'address_line_2', 'city', 'state', 'country']                    
+    
+    def __init__(self,*args, **kwargs):
+        super(ProfileForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update(
+                {
+                    'class': 'form-control'
+                }
+            )    

@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+
+{% block 'title' %}
+    Dashboard
+{% endblock 'title' %}
+    
+
+{% block 'style' %}
+    <style>
+    .avatar {
+      vertical-align: middle;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+    }
+    </style>
+{% endblock 'style' %}
+    
+
+
+{% block 'content' %}
+    {% load static %}
+
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-conten padding-y bg">
+
+    <div class="container">
+        <div class="row">
+        {% include 'includes/db_bar.html' %}
+        <main class="col-md-9">
+            <article class="card">
+            <header class="card-header">
+                <strong class="d-inline-block mr-3">Logged In as: </strong>
+                <span>{{ user.first_name |capfirst }} {{ user.last_name |capfirst }} </span>
+            </header>
+            <div class="card-body">
+                <div class='text-right'>
+                    <img src="{{ profile_pic }}" alt="Profile Pic" style='width:100px; border-radius: 50%;'>
+                </div>
+                <div class="row" > 
+                    <div class='col-md-12'>
+                        <form action="{% url 'edit-profile' %}" method = 'POST' enctype="multipart/form-data">
+                            {% csrf_token %}
+                           
+                            <div class='form-row'>
+                                <div class='col form-group'>
+                                    <label for="">First Name</label>
+                                    {% comment %} <input type="text" name='first_name' class='form-control' required> {% endcomment %}
+                                    {{ acc_form.first_name }}
+                                </div>
+                                <div class='col form-group'>
+                                    <label for="">Last Name</label>
+                                    {% comment %} <input type="text" name='last_name' class='form-control' required> {% endcomment %}
+                                    {{ acc_form.last_name }}
+                                </div>
+                            </div> 
+
+                            <div class='form-row'>
+                                <div class='col form-group'>
+                                    <label for="">Phone Number</label>
+                                    {% comment %} <input type="text" name='first_name' class='form-control' required> {% endcomment %}
+                                    {{ acc_form.phone_number }}
+                                </div>
+                                <div class='col form-group'>
+                                    <label for="">Profile Picture</label>
+                                    {% comment %} <input type="file" name='last_name' class='form-control' required> {% endcomment %}
+                                    {{ profile_form.profile_pic }}
+                                </div>
+                            </div>
+
+                            <div class='form-row'>
+                                <div class='col form-group'>
+                                    <label for="">Address Line 1 </label>
+                                    {% comment %} <input type="text" name='address_line_1' class='form-control' required> {% endcomment %}
+                                    {{ profile_form.address_line_1 }}
+                                </div>                                
+                            </div>
+                            <div class='form-row'>                              
+                                <div class='col form-group'>
+                                    <label for="">Address Line 2 </label>
+                                    {% comment %} <input type="text" name='address_line_2' class='form-control' required> {% endcomment %}
+                                    {{ profile_form.address_line_2 }}
+                                </div>
+                            </div>
+
+                            <div class='form-row'>
+                                <div class='col form-group'>
+                                    <label for="">City </label>
+                                    {{ profile_form.city }}
+                                    {% comment %} <input type="text" name='city' class='form-control' required> {% endcomment %}
+                                </div>
+                                <div class='col form-group'>
+                                    <label for="">State </label>
+                                    {% comment %} <input type="text" name='state' class='form-control' required> {% endcomment %}
+                                    {{ profile_form.state }}
+                                </div>
+                                <div class='col form-group'>
+                                    <label for="">Country </label>
+                                    {{ profile_form.country }}
+                                    {% comment %} <input type="text" name='country' class='form-control' required> {% endcomment %}
+                                </div>
+                            </div>
+                            <input type="submit" value='Save' class='btn btn-primary'>
+                        </form>
+                    </div>
+
+                     
+                </div> <!-- row.// -->
+            </div> <!-- card-body .// -->
+            
+            </article> <!-- order-group.// --> 
+        </main>
+    </div> <!-- row.// -->
+    </div>
+    
+    
+    </section>
+    <!-- ========================= SECTION CONTENT END// ========================= -->
+    
+{% endblock 'content' %}
+    

@@ -21,15 +21,23 @@ from Cart.views import _cart_id
 
 # MODELS
 from .models import (
-    Account
+    Account,
+    UserProfile
 )
 from Cart.models import (
     Cart,
     CartItems
 )
+from Orders.models import (
+    Order,
+    OrderProduct,
+    Payment
+)
 # Forms
 from .forms import (
-    RegisterationForm
+    RegisterationForm,
+    AccountForm,
+    ProfileForm
 )
 # Create your views here.
 def register_page(request):
@@ -48,6 +56,11 @@ def register_page(request):
             user.phone_number = phone_number
             # print(user)
             user.save()      
+            
+            profile = UserProfile()
+            profile.user = user
+            profile.profile_pic = 'Images/default/defaultPic.jpg'
+            profile.save()
             
             # USER ACTIVATION
             current_site = get_current_site(request)
@@ -164,4 +177,85 @@ def activate(request, uidb64, token):
 
 @login_required(login_url='login-page')
 def dashboard(request):
-    return render(request, 'acc/dashboard.html')
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    order_count = orders.count()
+    
+    user_profile = UserProfile.objects.get(user=request.user)
+    context = {
+        'orders': orders,
+        'order_count': order_count,
+        'user_profile': user_profile
+    }
+    return render(request, 'acc/dashboard.html', context)
+
+@login_required(login_url='login-page')
+def my_orders(request):
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    context = {
+        'orders': orders
+    }
+    
+    return render(request, 'acc/my_orders.html',context)
+
+@login_required(login_url='login-page')
+def edit_profile(request):
+    profile_instance = UserProfile.objects.get(user=request.user)   
+  
+    if request.method == 'POST':
+        acc_form = AccountForm(request.POST,instance= request.user)
+        profile_form = ProfileForm(request.POST, request.FILES, instance=profile_instance)
+        if acc_form.is_valid() and profile_form.is_valid():
+            acc_form.save()
+            profile_form.save()
+            print("Updated the Profile")
+            return redirect('edit-profile')
+    else:
+        acc_form = AccountForm(instance=request.user)
+        profile_form = ProfileForm(instance=profile_instance)
+        print("View the Profile")
+    context = {
+        'acc_form':acc_form,
+        'profile_form': profile_form,
+        
+        'profile_pic': profile_instance.profile_pic.url
+    }
+     
+    return render(request, 'acc/edit_profile.html',context)
+
+@login_required(login_url='login-page')
+def change_password(request):    
+    if request.method == 'POST':
+        current_password = request.POST['current_password']
+        new_password = request.POST['new_password']
+        confirm_password = request.POST['confirm_password']
+        user = Account.objects.get(username = request.user.username)
+        if new_password == confirm_password:
+            success = user.check_password(current_password)
+            if success:
+                user.set_password(new_password)
+                user.save()
+                messages.success(request, 'Password has been reset')
+                return redirect('dashboard')
+            else:
+                messages.error(request, 'Current password does not match!')
+                return redirect('change-password')
+        else:
+            messages.error(request, 'Passwords do not Match!')
+            return redirect('change-password')
+        
+    return render(request, 'acc/change_password.html')
+
+ 
+def order_detail(request, order_id):
+    order = Order.objects.get(id = order_id)
+    order_products = OrderProduct.objects.filter(order=order)
+    
+    sub_total = 0
+    for item in order_products:
+        sub_total += item.quantity * item.product_price
+    context = {
+        'order':order,
+        'order_products': order_products,
+        'sub_total': sub_total
+    } 
+    return render(request, 'acc/order_detail.html',context)

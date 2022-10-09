@@ -66,7 +66,8 @@ def place_order(request):
             data.tax = tax
             data.ip = request.META.get('REMOTE_ADDR')
             data.save()
-            current_date = datetime.datetime.now().strftime("%I:%M%p on %B-%d-%Y")
+            # current_date = datetime.datetime.now().strftime("%I:%M%p on %B-%d-%Y")
+            current_date = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
             data.order_number = str(data.id) + current_date
             print(data.order_number)
             data.save()
