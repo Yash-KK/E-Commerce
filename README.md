@@ -5,6 +5,7 @@ An Ecommerce website built using the following Tech-stack:
   <li>Html/Css</li>
   <li>Bootstrap</li>
 </ul>
+<hr>
 ### 1. Homepage
 ![1_Homepage](https://user-images.githubusercontent.com/95636204/194895283-0f1d0488-5a0c-41d5-811a-3e6f1440cc21.png)
 
