@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
+from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -22,8 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-1#y!dlz3#v(dnrci=*m(1#r)g#+@*+7x67lqhx&e-w(ns0o)b('
 
+
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG',cast=bool)
+
 
 ALLOWED_HOSTS = []
 
@@ -42,8 +45,11 @@ INSTALLED_APPS = [
     'Category',
     'Store',
     'Cart',
-    'Orders'
+    'Orders',
+    
+    # 'admin_honeypot'
 ]
+# INSTALLED_APPS += ['admin_honeypot']
 AUTH_USER_MODEL = 'acc.Account'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -131,11 +137,12 @@ USE_I18N = True
 USE_TZ = True
 
 
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'yashpertisen@gmail.com'
-EMAIL_HOST_PASSWORD = 'wpghaeoxjiyzfnug'
-EMAIL_USE_TLS = True
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT',cast=int)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+EMAIL_USE_TLS = config("EMAIL_USE_TLS",cast=bool)
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -151,7 +158,6 @@ STATIC_ROOT = (os.path.join(BASE_DIR, 'static'))
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
 # razorpay
-RAZORPAY_API_KEY_ID = "rzp_test_Tu1pT2oZQ4WOB2"
-RAZORPAY_API_KEY_SECRET = "aSzPQrCSWDivNX7jGWplVGkF"
+RAZORPAY_API_KEY_ID = config('RAZORPAY_API_KEY_ID')
+RAZORPAY_API_KEY_SECRET = config('RAZORPAY_API_KEY_SECRET')
