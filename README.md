@@ -7,7 +7,7 @@ An Ecommerce website built using the following Tech-stack:
 </ul>
 <hr>
 ### 1. Homepage
-![1_Homepage](https://user-images.githubusercontent.com/95636204/194895283-0f1d0488-5a0c-41d5-811a-3e6f1440cc21.png)
+![1_Homepage](https://user-images.githubusercontent.com/95636204/194896469-f9845986-16ea-415e-81d0-8ffae0637092.png)
 
 ### 2. Cartpage
 ![2_cartPage](https://user-images.githubusercontent.com/95636204/194895291-3473ac17-bf07-4563-aa98-afe586edd66f.png)
